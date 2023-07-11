@@ -1,6 +1,9 @@
+const launchesDb = require("./launch.mongo");
+const planetsDb = require("./planet.mongo");
+
 const launches = new Map();
 
-let latestFlightNumber = 100;
+const DEFAULT_FLIGHT_NUMBER = 100;
 
 const launch = {
   flightNumber: 100,
@@ -8,32 +11,58 @@ const launch = {
   rocket: "Rocket MSI",
   target: "Mars",
   launchDate: new Date("December 28, 2030"),
-  destination: "Kepler-442 b",
+  target: "Kepler-442 b",
   customers: ["NASA", "Mobilearnings"],
   upcoming: true,
   success: true,
 };
 
-launches.set(launch.flightNumber, launch);
+async function getLatestFlightNumber() {
+  const latestLaunch = await launchesDb.findOne().sort("-flightNumber");
 
-function getAllLaunches() {
-  return Array.from(launches.values());
+  if (!latestLaunch) {
+    return DEFAULT_FLIGHT_NUMBER;
+  }
+
+  return latestLaunch.flightNumber;
 }
 
-function addNewLaunch(launch) {
-  latestFlightNumber++;
+async function saveLaunch(launch) {
+  const planet = await planetsDb.findOne({ kepler_name: launch.target });
 
-  launches.set(
-    latestFlightNumber,
-    Object.assign(launch, {
-      flightNumber: latestFlightNumber,
-      customers: ["NASA", "Mobilearnings"],
-      upcoming: true,
-      success: true,
-    })
+  if (!planet) {
+    throw new Error("No matching planet found");
+  }
+
+  await launchesDb.findOneAndUpdate(
+    {
+      flightNumber: launch.flightNumber,
+    },
+    launch,
+    { upsert: true }
   );
+}
 
-  return launches.get(latestFlightNumber);
+saveLaunch(launch);
+
+async function getAllLaunches() {
+  return await launchesDb.find({}, { _id: 0, __v: 0 });
+}
+
+async function scheduleNewLaunch(launch) {
+  const newFlightNumber = (await getLatestFlightNumber()) + 1;
+
+  const newLauch = {
+    ...launch,
+    success: true,
+    upcoming: true,
+    flightNumber: newFlightNumber,
+    customers: ["NASA", "Mobilearnings"],
+  };
+
+  await saveLaunch(newLauch);
+
+  return newLauch;
 }
 
 function existLaunchWithId(id) {
@@ -48,8 +77,8 @@ function abortLaunchById(id) {
 }
 
 module.exports = {
+  scheduleNewLaunch,
   getAllLaunches,
-  addNewLaunch,
   existLaunchWithId,
   abortLaunchById,
 };

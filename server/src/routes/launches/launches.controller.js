@@ -1,36 +1,43 @@
 const {
   getAllLaunches,
-  addNewLaunch,
+  scheduleNewLaunch,
   existLaunchWithId,
   abortLaunchById,
 } = require("../../models/launch.model");
 
-function httpGetAllLaunches(req, res) {
-  return res.status(200).json(getAllLaunches());
+async function httpGetAllLaunches(req, res) {
+  return res.status(200).json(await getAllLaunches());
 }
 
-function httpAddNewLaunch(req, res) {
-  const launchBody = req.body;
+async function httpAddNewLaunch(req, res) {
+  try {
+    const launchBody = req.body;
 
-  if (
-    !launchBody.mission ||
-    !launchBody.target ||
-    !launchBody.launchDate ||
-    !launchBody.rocket
-  ) {
-    return res.status(422).json({ error: "Missing required launch property" });
+    if (
+      !launchBody.mission ||
+      !launchBody.target ||
+      !launchBody.launchDate ||
+      !launchBody.rocket
+    ) {
+      return res
+        .status(422)
+        .json({ error: "Missing required launch property" });
+    }
+
+    if (isNaN(new Date(launchBody.launchDate))) {
+      return res.status(422).json({ error: "Invalid launch date" });
+    }
+
+    const newLaunch = await scheduleNewLaunch({
+      ...launchBody,
+      launchDate: new Date(launchBody.launchDate),
+    });
+
+    return res.status(201).json(newLaunch);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error?.message || "Something went wrong" });
   }
-
-  if (isNaN(new Date(launchBody.launchDate))) {
-    return res.status(422).json({ error: "Invalid launch date" });
-  }
-
-  const launch = addNewLaunch({
-    ...launchBody,
-    launchDate: new Date(launchBody.launchDate),
-  });
-
-  return res.status(201).json(launch);
 }
 
 function httpAbortLaunch(req, res) {
