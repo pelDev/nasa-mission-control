@@ -43,8 +43,6 @@ async function saveLaunch(launch) {
   );
 }
 
-saveLaunch(launch);
-
 async function getAllLaunches() {
   return await launchesDb.find({}, { _id: 0, __v: 0 });
 }
@@ -65,15 +63,20 @@ async function scheduleNewLaunch(launch) {
   return newLauch;
 }
 
-function existLaunchWithId(id) {
-  return launches.has(id);
+async function existLaunchWithId(id) {
+  return await launchesDb.findOne({ flightNumber: id });
 }
 
-function abortLaunchById(id) {
-  const aborted = launches.get(id);
-  aborted.upcoming = false;
-  aborted.success = false;
-  return aborted;
+async function abortLaunchById(id) {
+  const aborted = await launchesDb.updateOne(
+    { flightNumber: id },
+    {
+      success: false,
+      upcoming: false,
+    }
+  );
+
+  return aborted.modifiedCount === 1;
 }
 
 module.exports = {
