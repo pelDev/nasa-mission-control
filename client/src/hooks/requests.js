@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:8000";
 
 async function httpGetPlanets() {
-  const response = await fetch(`${API_URL}/planets`);
+  const response = await fetch(`${API_URL}/v1/planets`);
   return await response.json();
 }
 
@@ -13,7 +13,7 @@ async function httpGetLaunches() {
 
 async function httpSubmitLaunch(launch) {
   try {
-    const lauch = await fetch(`${API_URL}/launches`, {
+    const lauch = await fetch(`${API_URL}/v1/launches`, {
       method: "POST",
       body: JSON.stringify(launch),
       headers: {
@@ -29,7 +29,7 @@ async function httpSubmitLaunch(launch) {
 
 async function httpAbortLaunch(id) {
   try {
-    const response = await fetch(`${API_URL}/launches/${id}`, {
+    const response = await fetch(`${API_URL}/v1/launches/${id}`, {
       method: "DELETE",
     });
 
