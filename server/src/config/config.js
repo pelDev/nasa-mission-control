@@ -10,6 +10,7 @@ const envValidation = Joi.object()
       .valid("development", "production", "test")
       .required(),
     MONGO_URL: Joi.string().required(),
+    SPACEX_URL: Joi.string().required(),
   })
   .unknown();
 
@@ -24,4 +25,5 @@ if (error) {
 module.exports = {
   nodeEnv: envVar.NODE_ENV,
   mongoUrl: envVar.MONGO_URL,
+  spaceXUrl: envVar.SPACEX_URL,
 };
