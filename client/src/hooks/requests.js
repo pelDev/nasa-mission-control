@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8000";
+const API_URL =
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:8000";
 
 async function httpGetPlanets() {
   const response = await fetch(`${API_URL}/v1/planets`);

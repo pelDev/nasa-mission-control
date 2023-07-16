@@ -8,7 +8,7 @@
     "test-watch": "jest --watch",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "cluster": "pm2 start src/server.js -i max"
+    "cluster": "pm2-runtime start src/server.js -i max"
   },
   "keywords": [],
   "author": "",
