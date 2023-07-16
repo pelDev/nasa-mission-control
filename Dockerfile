@@ -12,4 +12,4 @@ ENV NODE_ENV production
 
 EXPOSE ${PORT}
 
-CMD [ "npm", "run", "deploy-cluster" ]
+CMD [ "npm", "run", "deploy" ]
