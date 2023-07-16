@@ -10,6 +10,9 @@ RUN npm install
 
 ENV NODE_ENV production
 
-EXPOSE 8000
+ARG PORT
+ENV PORT ${PORT}
 
-CMD [ "npm", "run", "deploy" ]
+EXPOSE ${PORT}
+
+CMD [ "npm", "run", "deploy-cluster" ]
