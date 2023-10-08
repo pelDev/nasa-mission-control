@@ -1,8 +1,8 @@
-.dockerignore
-node_modules
+*/node_modules
 npm-debug.log
 Dockerfile
 .git
 .gitignore
 .npmrc
 README.md
+server/public

@@ -1,15 +1,22 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
-COPY . .
+COPY client/package*.json client/
+RUN npm run install-client --omit=dev
 
-RUN npm install
+COPY server/package*.json server/
+RUN npm run install-server --omit=dev
 
-ENV NODE_ENV production
+COPY client client/
+RUN npm run build --prefix client
 
-EXPOSE ${PORT}
+COPY server server/
 
-CMD [ "npm", "run", "deploy" ]
+USER node
+
+CMD [ "npm", "start", "--prefix", "server" ]
+
+EXPOSE 8000
