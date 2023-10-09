@@ -6,3 +6,4 @@ Dockerfile
 .npmrc
 README.md
 server/public
+*.pem

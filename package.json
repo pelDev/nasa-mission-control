@@ -12,7 +12,10 @@
     "client": "npm start --prefix client",
     "watch": "npm run server & npm run client",
     "deploy": "npm run build --prefix client && npm start --prefix server",
-    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server"
+    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
+    "connect-instance": "ssh -i key.pem ec2-user@35.173.139.116",
+    "docker-build": "docker build . -t crazydev0/nasa-project",
+    "docker-run": "docker run -it -p 8000:8000 crazydev0/nasa-project"
   },
   "keywords": [],
   "author": "crazy_dev",
