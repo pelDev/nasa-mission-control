@@ -8,7 +8,7 @@ const envValidation = Joi.object()
   .keys({
     NODE_ENV: Joi.string()
       .valid("development", "production", "test")
-      .required(),
+      .default("production"),
     MONGO_URL: Joi.string().required(),
     SPACEX_URL: Joi.string().required(),
   })

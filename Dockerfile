@@ -15,6 +15,8 @@ RUN npm run build --prefix client
 
 COPY server server/
 
+COPY .env ./
+
 USER node
 
 CMD [ "npm", "start", "--prefix", "server" ]
